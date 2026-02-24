@@ -11,8 +11,14 @@ export default {
 
     withPluginApi("0.8.14", api => {
       const { h } = api;
-
-      api.modifyClass("component:reviewable-item", {
+      const user = api.getCurrentUser();
+      if (!user?.can_review) {
+        return;
+      }
+      const componentName = user.use_reviewable_ui_refresh
+        ? "reviewable-refresh/item"
+        : "reviewable-item";
+      api.modifyClass("component:" + componentName, {
 
         clientSiftDisagree(reviewable, performAction) {
           // Popup disagree reason
